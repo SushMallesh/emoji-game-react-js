@@ -1,0 +1,104 @@
+import {Component} from 'react'
+import NavBar from '../NavBar'
+import EmojiCard from '../EmojiCard'
+import WinOrLoseCard from '../WinOrLoseCard'
+import './index.css'
+
+// const bestScore = localStorage.getItem('topScore')
+
+class EmojiGame extends Component {
+  state = {emojisClicked: [], bestScore: 0, topScore: 0}
+
+  onSelectEmoji = id => {
+    const {emojisClicked} = this.state
+
+    this.setState({
+      emojisClicked: [...emojisClicked, id],
+      bestScore: emojisClicked.length + 1,
+    })
+  }
+
+  shuffledEmojisList = () => {
+    const {emojisList} = this.props
+    return emojisList.sort(() => Math.random() - 0.5)
+  }
+
+  isWonEmojiGame = () => {
+    const {emojisList} = this.props
+    const {emojisClicked} = this.state
+
+    const score = emojisClicked.filter(
+      eachItem =>
+        emojisClicked.indexOf(eachItem) === emojisClicked.lastIndexOf(eachItem),
+    )
+    if (
+      score.length < emojisClicked.length ||
+      score.length === emojisList.length
+    ) {
+      return false
+    }
+    return true
+  }
+
+  onPlayGameAgain = playAgain => {
+    const {topScore, bestScore} = this.state
+    if (playAgain) {
+      this.setState({
+        emojisClicked: [],
+        topScore: bestScore > topScore ? bestScore - 1 : topScore,
+      })
+    }
+  }
+
+  renderWinOrLoseCard = (isWon, emojisClicked) => {
+    const {emojisList} = this.props
+    const totalScore = emojisList.length
+    const isAllEmojisClicked = emojisClicked.length === totalScore
+    const winStatus = isWon || isAllEmojisClicked
+    const userScore = winStatus
+      ? emojisClicked.length
+      : emojisClicked.length - 1
+
+    return (
+      <WinOrLoseCard
+        onPlayGameAgain={this.onPlayGameAgain}
+        totalScore={totalScore}
+        isWonGame={winStatus}
+        userScore={userScore}
+      />
+    )
+  }
+
+  render() {
+    const {emojisClicked, topScore} = this.state
+
+    const isWon = this.isWonEmojiGame()
+    const shuffledList = this.shuffledEmojisList()
+    return (
+      <div className="app-container">
+        <NavBar
+          score={emojisClicked.length}
+          isWon={isWon}
+          topScore={topScore}
+        />
+        <div className="emojis-container">
+          {isWon && (
+            <ul className="emojis-display-container">
+              {shuffledList.map(eachEmoji => (
+                <EmojiCard
+                  onSelectEmoji={this.onSelectEmoji}
+                  emoji={eachEmoji}
+                  key={eachEmoji.id}
+                />
+              ))}
+            </ul>
+          )}
+
+          {!isWon && this.renderWinOrLoseCard(isWon, emojisClicked)}
+        </div>
+      </div>
+    )
+  }
+}
+
+export default EmojiGame

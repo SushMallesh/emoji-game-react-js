@@ -1,0 +1,31 @@
+.navbar-bg {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #9796f0;
+  color: #ffffff;
+  font-family: 'Roboto';
+}
+.navbar-title {
+  align-self: flex-start;
+}
+
+.nav-card {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin-left: 40px;
+}
+.score-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-right: 40px;
+}
+.score-value {
+  margin-right: 10px;
+  color: #ffffff;
+}
+/* .no-card {
+  display: none;
+} */
